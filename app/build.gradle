@@ -1,0 +1,44 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.ammorshed.headlines'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'com.ammorshed.headlines'
+        minSdk 24
+        targetSdk 34
+        // প্রতিটি GitHub build-এ versionCode বাড়ে, তাই নতুন APK পুরোনোটির ওপর ইনস্টল হয়
+        versionCode Integer.parseInt(System.getenv('GITHUB_RUN_NUMBER') ?: '1')
+        versionName '1.0.' + (System.getenv('GITHUB_RUN_NUMBER') ?: '1')
+    }
+
+    signingConfigs {
+        release {
+            storeFile file('release.jks')
+            storePassword 'headlines123'
+            keyAlias 'headlines'
+            keyPassword 'headlines123'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            shrinkResources false
+            signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    lint {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+}
