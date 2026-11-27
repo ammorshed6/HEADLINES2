@@ -123,8 +123,10 @@ var TABS = [
 
 var BLOCK = /(facebook|twitter|instagram|tiktok|youtube|youtu\.be|telegram|whatsapp|reddit|pinterest|linkedin|snapchat|threads\.net|medium\.com|blogspot|wordpress|quora|ফেসবুক|টুইটার|ইউটিউব|ইনস্টাগ্রাম|টিকটক)/i;
 var BLOCK_EXACT = /^(x|x\.com|x corp)$/i;
+var EXCL = /(জাগো\s*নিউজ|jago\s*news|jagonews|বাংলা\s*ট্রিবিউন|bangla\s*tribune|banglatribune)/i;
 function blocked(it){
   var s = String(it.src || '').trim();
+  if(EXCL.test(s) || EXCL.test(String(it.link || ''))) return true;
   if(BLOCK_EXACT.test(s)) return true;
   if(BLOCK.test(s)) return true;
   var l = String(it.link || '');
@@ -132,7 +134,7 @@ function blocked(it){
   return false;
 }
 
-var APP_VER = 'সংস্করণ ৬.০ (জাগো-মুক্ত)';
+var APP_VER = 'সংস্করণ ৬.১ (জাগো-মুক্ত)';
 var cur = 0;
 var token = 0;
 var AUTO_MIN = 15; /* স্বয়ংক্রিয় রিফ্রেশের ব্যবধান (মিনিট) */
