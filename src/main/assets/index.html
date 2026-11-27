@@ -141,6 +141,7 @@ function blocked(it){
   return false;
 }
 
+var APP_VER = 'সংস্করণ ৫.১ (৭ উৎস-গ্রুপ)';
 var cur = 0;
 var token = 0;
 var AUTO_MIN = 15; /* স্বয়ংক্রিয় রিফ্রেশের ব্যবধান (মিনিট) */
@@ -414,7 +415,7 @@ function showDiag(tab, all){
   }
   var el = document.getElementById('diag');
   if(!el) return;
-  el.textContent = 'উৎস চালু: ' + bnNum(ok) + '/' + bnNum(tab.feeds.length) + (bad.length ? ' · আনা যায়নি: ' + bad.join(', ') : '');
+  el.textContent = 'উৎস চালু: ' + bnNum(ok) + '/' + bnNum(tab.feeds.length) + (bad.length ? ' · আনা যায়নি: ' + bad.join(', ') : '') + ' · ' + APP_VER;
 }
 
 function cardHTML(it, i){
@@ -472,6 +473,7 @@ function buildTabs(){
 }
 
 document.getElementById('rf').onclick = function(){ loadTab(cur, true); };
+document.getElementById('diag').textContent = APP_VER;
 buildTabs();
 loadTab(cur, false);
 
