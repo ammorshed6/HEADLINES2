@@ -7,7 +7,7 @@ android {
     compileSdk 34
 
     defaultConfig {
-        applicationId 'com.ammorshed.headlines'
+        applicationId 'com.ammorshed.headlines2'
         minSdk 24
         targetSdk 34
         // প্রতিটি GitHub build-এ versionCode বাড়ে, তাই নতুন APK পুরোনোটির ওপর ইনস্টল হয়
