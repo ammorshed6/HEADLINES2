@@ -51,7 +51,7 @@ a.card{display:flex;gap:12px;align-items:flex-start;background:var(--card);borde
 <div class="meta" id="meta"></div>
 <div class="meta" id="diag" style="padding-top:0"></div>
 <div class="list" id="list"></div>
-<div class="foot">উৎস: প্রতিষ্ঠিত সংবাদ সংস্থা ও সংবাদমাধ্যম। বাংলা শিরোনাম প্রথম আলো, দ্য ডেইলি স্টার (বাংলা), ইত্তেফাক, সমকাল, কালের কণ্ঠ, যুগান্তর, বাংলাদেশ প্রতিদিন, বিডিনিউজ২৪, নয়াদিগন্ত, BBC বাংলা, DW বাংলা ও Google News বাংলাদেশ থেকে; সহায়ক উৎস জাগো নিউজ২৪ ও বাংলা ট্রিবিউন। ইংরেজি সংবাদ BBC News, Reuters, AP, Al Jazeera, DW, The Guardian ও ESPN থেকে নিয়ে স্বয়ংক্রিয়ভাবে বাংলায় অনুবাদ করা হয়, নিচে মূল ইংরেজি শিরোনামও দেখানো হয়। স্বয়ংক্রিয় অনুবাদে ভুল থাকতে পারে। সামাজিক যোগাযোগমাধ্যম (Facebook, X/Twitter ইত্যাদি) থেকে কোনো খবর নেওয়া হয় না। পূর্ণ সংবাদ পড়তে শিরোনামে চাপ দিন।</div>
+<div class="foot">উৎস: প্রতিষ্ঠিত সংবাদ সংস্থা ও সংবাদমাধ্যম। বাংলা শিরোনাম প্রথম আলো, দ্য ডেইলি স্টার (বাংলা), ইত্তেফাক, সমকাল, কালের কণ্ঠ, যুগান্তর, বাংলাদেশ প্রতিদিন, বিডিনিউজ২৪, নয়াদিগন্ত, BBC বাংলা, DW বাংলা ও Google News বাংলাদেশ থেকে। ইংরেজি সংবাদ BBC News, Reuters, AP, Al Jazeera, DW, The Guardian ও ESPN থেকে নিয়ে স্বয়ংক্রিয়ভাবে বাংলায় অনুবাদ করা হয়, নিচে মূল ইংরেজি শিরোনামও দেখানো হয়। স্বয়ংক্রিয় অনুবাদে ভুল থাকতে পারে। সামাজিক যোগাযোগমাধ্যম (Facebook, X/Twitter ইত্যাদি) থেকে কোনো খবর নেওয়া হয় না। পূর্ণ সংবাদ পড়তে শিরোনামে চাপ দিন।</div>
 
 <script>
 var BN = 'hl=bn&gl=BD&ceid=BD:bn';
@@ -60,9 +60,7 @@ function topic(t){ return 'https://news.google.com/rss/headlines/section/topic/'
 function search(q){ return 'https://news.google.com/rss/search?q=' + encodeURIComponent(q) + '&' + BN; }
 function searchEn(q){ return 'https://news.google.com/rss/search?q=' + encodeURIComponent(q) + '&' + EN; }
 
-/* অগ্রাধিকার: প্রথম আলো, ডেইলি স্টার, BBC বাংলা আগে। জাগো নিউজ২৪ ও বাংলা ট্রিবিউন কেবল সহায়ক */
-var JAGO = 'https://www.jagonews24.com/rss/rss.xml';
-var TRIB = 'https://www.banglatribune.com/feed';
+/* অগ্রাধিকার: প্রথম আলো, ডেইলি স্টার ও অন্যান্য প্রথম সারির মিডিয়া, BBC বাংলা */
 var BBCB = 'https://feeds.bbci.co.uk/bengali/rss.xml';
 var G1 = ['prothomalo.com', 'bangla.thedailystar.net', 'ittefaq.com.bd'];
 var G2 = ['samakal.com', 'kalerkantho.com', 'jugantor.com'];
@@ -80,15 +78,13 @@ var KW_ECO = /(ব্যাংক|অর্থনীতি|বাজার|ট�
 var KW_SPT = /(ক্রিকেট|ফুটবল|টেস্ট|ওয়ানডে|টি-টোয়েন্টি|বিপিএল|বিশ্বকাপ|গোল|ম্যাচ|সাকিব|মেসি|রোনালদো|খেলোয়াড়|টুর্নামেন্ট)/;
 
 var TABS = [
-  { k: 'desh5', n: 'দেশ', feeds: [
+  { k: 'desh6', n: 'দেশ', feeds: [
       { u: pa('বাংলাদেশ'), s: '' },
       { u: ds('বাংলাদেশ'), s: '' },
       { u: g3('বাংলাদেশ'), s: '' },
       { u: BBCB, s: 'BBC বাংলা' },
-      { u: topic('NATION'), s: '' },
-      { u: JAGO, s: 'জাগো নিউজ২৪' },
-      { u: TRIB, s: 'বাংলা ট্রিবিউন' } ] },
-  { k: 'bidesh5', n: 'বিদেশ', feeds: [
+      { u: topic('NATION'), s: '' } ] },
+  { k: 'bidesh6', n: 'বিদেশ', feeds: [
       { u: BBCB, s: 'BBC বাংলা' },
       { u: pa('আন্তর্জাতিক'), s: '' },
       { u: ds('আন্তর্জাতিক'), s: '' },
@@ -101,23 +97,20 @@ var TABS = [
       { u: searchEn('site:apnews.com when:1d'), s: 'Associated Press', l: 'en' },
       { u: 'https://rss.dw.com/rdf/rss-en-all', s: 'DW', l: 'en' },
       { u: 'https://www.theguardian.com/world/rss', s: 'The Guardian', l: 'en' } ] },
-  { k: 'rajniti5', n: 'রাজনীতি', feeds: [
+  { k: 'rajniti6', n: 'রাজনীতি', feeds: [
       { u: pa('রাজনীতি'), s: '' },
       { u: ds('রাজনীতি'), s: '' },
       { u: g3('রাজনীতি'), s: '' },
       { u: BBCB, s: 'BBC বাংলা', kw: KW_POL },
-      { u: search('রাজনীতি when:1d'), s: '' },
-      { u: JAGO, s: 'জাগো নিউজ২৪', kw: KW_POL },
-      { u: TRIB, s: 'বাংলা ট্রিবিউন', kw: KW_POL } ] },
-  { k: 'khela5', n: 'খেলাধুলা', feeds: [
+      { u: search('রাজনীতি when:1d'), s: '' } ] },
+  { k: 'khela6', n: 'খেলাধুলা', feeds: [
       { u: pa('খেলা'), s: '' },
       { u: ds('খেলা'), s: '' },
       { u: g3('খেলা'), s: '' },
       { u: topic('SPORTS'), s: '' },
       { u: 'https://feeds.bbci.co.uk/sport/rss.xml', s: 'BBC Sport', l: 'en' },
-      { u: 'https://www.espn.com/espn/rss/news', s: 'ESPN', l: 'en' },
-      { u: JAGO, s: 'জাগো নিউজ২৪', kw: KW_SPT } ] },
-  { k: 'orthoniti5', n: 'অর্থনীতি ও ব্যাংকিং', feeds: [
+      { u: 'https://www.espn.com/espn/rss/news', s: 'ESPN', l: 'en' } ] },
+  { k: 'orthoniti6', n: 'অর্থনীতি ও ব্যাংকিং', feeds: [
       { u: pa('অর্থনীতি ব্যাংক'), s: '' },
       { u: ds('অর্থনীতি ব্যাংক'), s: '' },
       { u: g3('অর্থনীতি ব্যাংক'), s: '' },
@@ -125,9 +118,7 @@ var TABS = [
       { u: search('ব্যাংক বাংলাদেশ ব্যাংক when:1d'), s: '' },
       { u: 'https://feeds.bbci.co.uk/news/business/rss.xml', s: 'BBC News', l: 'en' },
       { u: searchEn('site:reuters.com business when:1d'), s: 'Reuters', l: 'en' },
-      { u: 'https://www.theguardian.com/business/rss', s: 'The Guardian', l: 'en' },
-      { u: JAGO, s: 'জাগো নিউজ২৪', kw: KW_ECO },
-      { u: TRIB, s: 'বাংলা ট্রিবিউন', kw: KW_ECO } ] }
+      { u: 'https://www.theguardian.com/business/rss', s: 'The Guardian', l: 'en' } ] }
 ];
 
 var BLOCK = /(facebook|twitter|instagram|tiktok|youtube|youtu\.be|telegram|whatsapp|reddit|pinterest|linkedin|snapchat|threads\.net|medium\.com|blogspot|wordpress|quora|ফেসবুক|টুইটার|ইউটিউব|ইনস্টাগ্রাম|টিকটক)/i;
@@ -141,7 +132,7 @@ function blocked(it){
   return false;
 }
 
-var APP_VER = 'সংস্করণ ৫.১ (৭ উৎস-গ্রুপ)';
+var APP_VER = 'সংস্করণ ৬.০ (জাগো-মুক্ত)';
 var cur = 0;
 var token = 0;
 var AUTO_MIN = 15; /* স্বয়ংক্রিয় রিফ্রেশের ব্যবধান (মিনিট) */
@@ -325,7 +316,7 @@ function translate(t){
 
 /* ---------- ট্যাব লোড ---------- */
 function mix(all, n){
-  var CAP = 2, SEC = { 'জাগো নিউজ২৪': 1, 'বাংলা ট্রিবিউন': 1 }, cnt = {}, seen = {}, out = [];
+  var CAP = 2, SEC = {}, cnt = {}, seen = {}, out = [];
   for(var pass = 0; pass < 3; pass++){
     var idx = 0, more = true;
     while(out.length < n && more){
