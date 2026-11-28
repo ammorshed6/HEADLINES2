@@ -75,7 +75,7 @@ function ds(q){ return grp(G2, q); }
 function g3(q){ return grp(G3, q); }
 var KW_POL = /(রাজনীত|বিএনপি|আওয়ামী|জামায়াত|জাতীয় পার্টি|এনসিপি|সংসদ|নির্বাচন|ভোট|মন্ত্রী|উপদেষ্টা|প্রধানমন্ত্রী|দলীয়|সরকার)/;
 var KW_ECO = /(ব্যাংক|অর্থনীতি|বাজার|টাকা|ডলার|রপ্তানি|আমদানি|বিনিয়োগ|শেয়ার|ঋণ|মূল্যস্ফীতি|বাজেট|রিজার্ভ|জ্বালানি|দাম|রেমিট্যান্স|এনবিআর|শিল্প)/;
-var KW_SPT = /(ক্রিকেট|ফুটবল|টেস্ট|ওয়ানডে|টি-টোয়েন্টি|বিপিএল|বিশ্বকাপ|গোল|ম্যাচ|সাকিব|মেসি|রোনালদো|খেলোয়াড়|টুর্নামেন্ট)/;
+var KW_SPT = /(ক্রিকেট|ফুটবল|হকি|টেনিস|ব্যাডমিন্টন|কাবাডি|অ্যাথলেটিক|অলিম্পিক|গেমস|টেস্ট|ওয়ানডে|টি-টোয়েন্টি|টি২০|বিপিএল|আইপিএল|বিশ্বকাপ|এশিয়া কাপ|লিগ|ম্যাচ|সিরিজ|টুর্নামেন্ট|ফাইনাল|খেলোয়াড়|খেলা|ক্রীড়া|অধিনায়ক|ব্যাটার|ব্যাটসম্যান|বোলার|উইকেট|সেঞ্চুরি|ফিফা|আইসিসি|কোচ|গোলকিপার|ফুটবলার|ক্রিকেটার|প্রিমিয়ার|চ্যাম্পিয়ন|বদলি|শিরোপা|সাকিব|মেসি|রোনালদো|নেইমার|গারনাচো|টিভি সূচি)/;
 
 var TABS = [
   { k: 'desh6', n: 'দেশ', feeds: [
@@ -104,9 +104,9 @@ var TABS = [
       { u: BBCB, s: 'BBC বাংলা', kw: KW_POL },
       { u: search('রাজনীতি when:1d'), s: '' } ] },
   { k: 'khela6', n: 'খেলাধুলা', feeds: [
-      { u: pa('খেলা'), s: '' },
-      { u: ds('খেলা'), s: '' },
-      { u: g3('খেলা'), s: '' },
+      { u: pa('খেলা'), s: '', kw: KW_SPT },
+      { u: ds('খেলা'), s: '', kw: KW_SPT },
+      { u: g3('খেলা'), s: '', kw: KW_SPT },
       { u: topic('SPORTS'), s: '' },
       { u: 'https://feeds.bbci.co.uk/sport/rss.xml', s: 'BBC Sport', l: 'en' },
       { u: 'https://www.espn.com/espn/rss/news', s: 'ESPN', l: 'en' } ] },
@@ -134,7 +134,7 @@ function blocked(it){
   return false;
 }
 
-var APP_VER = 'সংস্করণ ৬.২ (জাগো-মুক্ত)';
+var APP_VER = 'সংস্করণ ৬.৩ (জাগো-মুক্ত)';
 var cur = 0;
 var token = 0;
 var AUTO_MIN = 15; /* স্বয়ংক্রিয় রিফ্রেশের ব্যবধান (মিনিট) */
@@ -188,6 +188,10 @@ var SRC_BN = {
   'business standard': 'দ্য বিজনেস স্ট্যান্ডার্ড',
   'financial express': 'দ্য ফিনান্সিয়াল এক্সপ্রেস',
   'new age': 'নিউ এজ',
+  'anandabazar patrika': 'আনন্দবাজার পত্রিকা',
+  'anandabazar': 'আনন্দবাজার পত্রিকা',
+  'dhaka post': 'ঢাকা পোস্ট',
+  'sangbad pratidin': 'সংবাদ প্রতিদিন',
   'bbc বাংলা': 'বিবিসি বাংলা',
   'dw বাংলা': 'ডিডব্লিউ বাংলা',
   'bbc news': 'বিবিসি নিউজ',
@@ -536,10 +540,10 @@ function show(items, t, old){
 }
 
 function readCache(k){
-  try { var s = localStorage.getItem('hl62_' + k); return s ? JSON.parse(s) : null; } catch(e){ return null; }
+  try { var s = localStorage.getItem('hl63_' + k); return s ? JSON.parse(s) : null; } catch(e){ return null; }
 }
 function writeCache(k, v){
-  try { localStorage.setItem('hl62_' + k, JSON.stringify(v)); } catch(e){}
+  try { localStorage.setItem('hl63_' + k, JSON.stringify(v)); } catch(e){}
 }
 
 function buildTabs(){
