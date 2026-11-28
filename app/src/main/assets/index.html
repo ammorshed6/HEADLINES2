@@ -134,7 +134,7 @@ function blocked(it){
   return false;
 }
 
-var APP_VER = 'সংস্করণ ৬.১ (জাগো-মুক্ত)';
+var APP_VER = 'সংস্করণ ৬.২ (জাগো-মুক্ত)';
 var cur = 0;
 var token = 0;
 var AUTO_MIN = 15; /* স্বয়ংক্রিয় রিফ্রেশের ব্যবধান (মিনিট) */
@@ -167,6 +167,101 @@ function timeout(p, ms){
     var t = setTimeout(function(){ rej(new Error('timeout')); }, ms);
     p.then(function(v){ clearTimeout(t); res(v); }, function(e){ clearTimeout(t); rej(e); });
   });
+}
+
+/* ---------- ৬.২: উৎসের নাম বাংলায়, শিরোনাম পরিষ্কার, একই খবর বাদ ---------- */
+var SRC_BN = {
+  'daily naya diganta': 'দৈনিক নয়া দিগন্ত',
+  'naya diganta': 'দৈনিক নয়া দিগন্ত',
+  'dainik naya diganta': 'দৈনিক নয়া দিগন্ত',
+  'daily ittefaq': 'দৈনিক ইত্তেফাক',
+  'ittefaq': 'দৈনিক ইত্তেফাক',
+  'bdnews24.com': 'বিডিনিউজ২৪.কম',
+  'bdnews24': 'বিডিনিউজ২৪.কম',
+  'prothom alo': 'প্রথম আলো',
+  'daily star': 'দ্য ডেইলি স্টার',
+  'samakal': 'সমকাল',
+  'kaler kantho': 'কালের কণ্ঠ',
+  'jugantor': 'যুগান্তর',
+  'bangladesh pratidin': 'বাংলাদেশ প্রতিদিন',
+  'dhaka tribune': 'ঢাকা ট্রিবিউন',
+  'business standard': 'দ্য বিজনেস স্ট্যান্ডার্ড',
+  'financial express': 'দ্য ফিনান্সিয়াল এক্সপ্রেস',
+  'new age': 'নিউ এজ',
+  'bbc বাংলা': 'বিবিসি বাংলা',
+  'dw বাংলা': 'ডিডব্লিউ বাংলা',
+  'bbc news': 'বিবিসি নিউজ',
+  'bbc sport': 'বিবিসি স্পোর্ট',
+  'reuters': 'রয়টার্স',
+  'associated press': 'অ্যাসোসিয়েটেড প্রেস',
+  'al jazeera': 'আল জাজিরা',
+  'dw': 'ডিডব্লিউ',
+  'guardian': 'দ্য গার্ডিয়ান',
+  'espn': 'ইএসপিএন'
+};
+function srcKey(s){ return String(s || '').toLowerCase().replace(/^the\s+/, '').replace(/\s+/g, ' ').trim(); }
+function bnSource(s){ var v = SRC_BN[srcKey(s)]; return v ? v : s; }
+function reEsc(s){ return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+function sufRe(name){
+  return new RegExp('\\s*[-–—|:]\\s*(?:the\\s+)?' + reEsc(name) + '(?:\\s*\\([^)]*\\))?\\s*$', 'i');
+}
+var SUF_RES = [];
+(function(){
+  var seenBn = {};
+  for(var k in SRC_BN){
+    if(!SRC_BN.hasOwnProperty(k)) continue;
+    SUF_RES.push(sufRe(k));
+    var bn = SRC_BN[k];
+    if(!seenBn[bn]){ seenBn[bn] = 1; SUF_RES.push(sufRe(bn)); }
+  }
+})();
+/* শিরোনামের শেষে লেগে থাকা " - উৎস" / ": উৎস (বাংলা নাম)" ছেঁটে ফেলা */
+function cleanTitle(t, src){
+  var orig = String(t || '').trim();
+  var cur = orig;
+  var res = SUF_RES.slice();
+  if(src){ res.push(sufRe(src)); }
+  for(var round = 0; round < 3; round++){
+    var before = cur;
+    for(var i = 0; i < res.length; i++){ cur = cur.replace(res[i], '').trim(); }
+    if(cur === before) break;
+  }
+  return cur.length >= 8 ? cur : orig;
+}
+/* একই খবর বাদ: শব্দ মিলিয়ে দেখা (সম্পূর্ণ নিখুঁত নয়, তবে নিরাপদ সীমায় রাখা) */
+var STOP = {'বাংলাদেশ':1,'এবং':1,'থেকে':1,'জন্য':1,'নিয়ে':1,'করে':1,'হবে':1,'এই':1,'এক':1};
+var SYN = {'চাকরি':'নিয়োগ','আবেদন':'নিয়োগ'};
+function stem(w){
+  if(w.length > 4){ w = w.replace(/(ের|কে|তে|র|য়|ে)$/, ''); }
+  return SYN[w] || w;
+}
+function tokSet(t){
+  var set = {}, n = 0;
+  var parts = String(t).split(/[\s,।:;'"‘’“”\-–—()\[\]?!.…·|\/]+/);
+  for(var i = 0; i < parts.length; i++){
+    var w = parts[i];
+    if(w.length < 2) continue;
+    w = stem(w);
+    if(STOP[w] || w.length < 2) continue;
+    if(!set[w]){ set[w] = 1; n++; }
+  }
+  set.__n = n;
+  return set;
+}
+function similar(a, b, sameSrc){
+  var ta = tokSet(a), tb = tokSet(b), common = 0;
+  for(var k in ta){ if(k !== '__n' && ta.hasOwnProperty(k) && tb[k]) common++; }
+  var na = ta.__n, nb = tb.__n;
+  if(!na || !nb) return false;
+  if(sameSrc && common >= 2 && common / Math.min(na, nb) >= 0.3) return true;
+  return common / (na + nb - common) >= 0.6;
+}
+function isDup(it, out){
+  for(var k = 0; k < out.length; k++){
+    if(out[k].link === it.link) return true;
+    if(similar(out[k].title, it.title, out[k].src === it.src)) return true;
+  }
+  return false;
 }
 
 /* ---------- ফিড আনা ---------- */
@@ -267,9 +362,11 @@ function getFeed(f){
         }
       }
       if(f.kw && !f.kw.test(title)) continue;
+      title = cleanTitle(title, src);
       var o = { title: title, link: it.link, time: it.time, src: src || 'অজ্ঞাত সূত্র', l: f.l === 'en' ? 'en' : 'bn' };
       if(f.l === 'en' && f.s && isGN){ o.src = f.s; }
       if(blocked(o)) continue;
+      o.src = bnSource(o.src);
       out.push(o);
     }
     out.sort(function(a, b){ return b.time - a.time; });
@@ -328,11 +425,9 @@ function mix(all, n){
           more = true;
           var it = all[a][idx];
           if(!it.title || !it.link) continue;
-          var key = it.title.toLowerCase().substring(0, 40);
-          if(seen[key]) continue;
+          if(isDup(it, out)) continue;
           if(pass === 0 && (cnt[it.src] || 0) >= (SEC[it.src] || CAP)) continue;
           if(pass === 1 && SEC[it.src]) continue; /* দ্বিতীয় দফা: ঘাটতি পড়লে আগে প্রধান উৎস থেকে পূরণ */
-          seen[key] = 1;
           cnt[it.src] = (cnt[it.src] || 0) + 1;
           out.push(it);
         }
@@ -441,10 +536,10 @@ function show(items, t, old){
 }
 
 function readCache(k){
-  try { var s = localStorage.getItem('hl_' + k); return s ? JSON.parse(s) : null; } catch(e){ return null; }
+  try { var s = localStorage.getItem('hl62_' + k); return s ? JSON.parse(s) : null; } catch(e){ return null; }
 }
 function writeCache(k, v){
-  try { localStorage.setItem('hl_' + k, JSON.stringify(v)); } catch(e){}
+  try { localStorage.setItem('hl62_' + k, JSON.stringify(v)); } catch(e){}
 }
 
 function buildTabs(){
